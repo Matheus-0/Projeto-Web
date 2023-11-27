@@ -1,8 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { MdArrowBack } from "react-icons/md";
 
+import api from "../../service/api";
+
 const Home = () => {
   const [shownComponent, setShownComponent] = useState<"login" | "none" | "register">("none");
+
+  const [userCredentials, setUserCredentials] = useState({ email: "", password: "" });
+
+  const createAccount = async () => {
+    try {
+      await api.post("/user/register", JSON.stringify({
+        email: userCredentials.email,
+        password: userCredentials.password,
+      }), {
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+    } catch (e: any) {
+      alert(e.response.data);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen items-center justify-center">
@@ -41,10 +61,28 @@ const Home = () => {
 
           <h2 className="font-semibold text-3xl">Criar conta</h2>
 
-          <input type="text" placeholder="Email" className="outline-none px-3 py-2 w-full" />
-          <input type="password" placeholder="Senha" className="outline-none px-3 py-2 w-full" />
+          <input
+            type="text"
+            placeholder="Email"
+            className="outline-none px-3 py-2 w-full"
+            onChange={(e) => setUserCredentials({ ...userCredentials, email: e.target.value })}
+            value={userCredentials.email}
+          />
 
-          <button className="bg-blue-500 text-white py-2 px-4 w-full hover:bg-blue-400">Criar conta</button>
+          <input
+            type="password"
+            placeholder="Senha"
+            className="outline-none px-3 py-2 w-full"
+            onChange={(e) => setUserCredentials({ ...userCredentials, password: e.target.value })}
+            value={userCredentials.password}
+          />
+
+          <button
+            className="bg-blue-500 text-white py-2 px-4 w-full hover:bg-blue-400"
+            onClick={createAccount}
+          >
+            Criar conta
+          </button>
         </div>
       )}
 
