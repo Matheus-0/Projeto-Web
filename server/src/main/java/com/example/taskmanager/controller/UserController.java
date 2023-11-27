@@ -18,8 +18,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
-        System.out.println("AQUI!");
-
         return userService.registerUser(userRegistrationDTO);
     }
 
