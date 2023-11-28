@@ -14,13 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class JWTTokenProvider {
@@ -42,12 +40,12 @@ public class JWTTokenProvider {
         algorithm = Algorithm.HMAC256(secretKey.getBytes());
     }
 
-    public TokenDTO createAccessToken(String username, List<String> roles) {
+    public TokenDTO createAccessToken(String username) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        var accessToken = getAccessToken(username, roles, now, validity);
-        var refreshToken = getRefreshToken(username, roles, now);
+        var accessToken = getAccessToken(username, now, validity);
+        var refreshToken = getRefreshToken(username, now);
 
         return new TokenDTO(username, true, now, validity, accessToken, refreshToken);
     }
@@ -61,17 +59,14 @@ public class JWTTokenProvider {
 
         String username = decodedJWT.getSubject();
 
-        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
-
-        return createAccessToken(username, roles);
+        return createAccessToken(username);
     }
 
-    private String getAccessToken(String username, List<String> roles, Date now, Date validity) {
+    private String getAccessToken(String username, Date now, Date validity) {
         String issuerURL = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
         return JWT
                 .create()
-                .withClaim("roles", roles)
                 .withIssuedAt(now)
                 .withExpiresAt(validity)
                 .withSubject(username)
@@ -80,12 +75,11 @@ public class JWTTokenProvider {
                 .strip();
     }
 
-    private String getRefreshToken(String username, List<String> roles, Date now) {
+    private String getRefreshToken(String username, Date now) {
         Date validityRefreshToken = new Date(now.getTime() + (validityInMilliseconds * 3));
 
         return JWT
                 .create()
-                .withClaim("roles", roles)
                 .withIssuedAt(now)
                 .withExpiresAt(validityRefreshToken)
                 .withSubject(username)
