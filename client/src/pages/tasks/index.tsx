@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { MdLogout } from "react-icons/md";
+import { MdLogout, MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../service/api";
@@ -72,16 +72,23 @@ const Tasks = () => {
                 <th className="py-2 px-4 bg-gray-200 text-left">Data para conclusão</th>
                 <th className="py-2 px-4 bg-gray-200 text-left">Data de criação</th>
                 <th className="py-2 px-4 bg-gray-200 text-left">Categoria</th>
+                <th className="py-2 px-4 bg-gray-200 text-left">Ações</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td className="py-2 px-4">Tarefa 1</td>
-                <td className="py-2 px-4">120 minutos</td>
-                <td className="py-2 px-4">05/12/2023</td>
-                <td className="py-2 px-4">01/12/2023</td>
-                <td className="py-2 px-4">Categoria A</td>
-            </tr>
+            {userTasks.map((task: any) => (
+              <tr>
+                <td className="py-3 px-4">{task.name}</td>
+                <td className="py-3 px-4">{task.duration}</td>
+                <td className="py-3 px-4">{task.dueDate}</td>
+                <td className="py-3 px-4">{task.createdDate}</td>
+                <td className="py-3 px-4">{task.category}</td>
+                <td className="py-3 px-4 flex gap-2 items-center">
+                  <button><MdOutlineEdit className="h-5 w-5" /></button>
+                  <button><MdOutlineDelete className="h-5 w-5" /></button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
