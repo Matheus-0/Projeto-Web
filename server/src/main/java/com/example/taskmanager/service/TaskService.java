@@ -59,7 +59,7 @@ public class TaskService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Erro: Usuário não existe no sistema.");
             } else {
-                ArrayList<Task> tasks = repository.findByUser(user).orElseThrow();
+                ArrayList<Task> tasks = repository.findByUserOrderByDurationDesc(user).orElseThrow();
 
                 return ResponseEntity.ok(tasks);
             }
