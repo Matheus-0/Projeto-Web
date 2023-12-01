@@ -30,4 +30,9 @@ public class TaskController {
         return taskService.updateTask(updateTaskDTO);
     }
 
+    @DeleteMapping
+    public ResponseEntity deleteTask(@RequestParam Long id) {
+        return taskService.deleteTask(id);
+    }
+
 }

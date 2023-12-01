@@ -96,4 +96,17 @@ public class TaskService {
         }
     }
 
+    public ResponseEntity deleteTask(Long id) {
+        try {
+            repository.deleteById(id);
+
+            return ResponseEntity.ok("Tarefa removida com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro: Algo deu errado ao remover a tarefa.");
+        }
+    }
+
 }

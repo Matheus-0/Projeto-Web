@@ -66,6 +66,32 @@ const Tasks = () => {
     });
   };
 
+  const handleDeleteButtonClick = async (task: any) => {
+    if (!confirm("Tem certeza que deseja apagar essa tarefa?")) {
+      return;
+    }
+
+    const userTokenData = getUserTokenData();
+
+    try {
+      const response = await api.delete("/task", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + userTokenData.accessToken,
+        },
+        params: {
+          id: task.id,
+        },
+      });
+
+      alert(response.data);
+
+      getUserTasks();
+    } catch (e: any) {
+      alert(e.response.data);
+    }
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -230,7 +256,10 @@ const Tasks = () => {
                     <MdOutlineEdit className="h-5 w-5" />
                   </button>
 
-                  <button>
+                  <button
+                    onClick={() => handleDeleteButtonClick(task)}
+                    disabled={modalOpen}
+                  >
                     <MdOutlineDelete className="h-5 w-5" />
                   </button>
                 </td>
