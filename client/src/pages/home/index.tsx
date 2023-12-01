@@ -1,24 +1,57 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { MdArrowBack } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 import api from "../../service/api";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const [shownComponent, setShownComponent] = useState<"login" | "none" | "register">("none");
 
-  const [userCredentials, setUserCredentials] = useState({ email: "", password: "" });
+  const [userRegistrationCredentials, setUserRegistrationCredentials] = useState({ email: "", password: "" });
+  const [userLoginCredentials, setUserLoginCredentials] = useState({ email: "", password: "" });
 
   const createAccount = async () => {
     try {
-      await api.post("/user/register", JSON.stringify({
-        email: userCredentials.email,
-        password: userCredentials.password,
+      const response = await api.post("/user/register", JSON.stringify({
+        email: userRegistrationCredentials.email,
+        password: userRegistrationCredentials.password,
       }), {
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
+
+      alert(response.data);
+
+      setShownComponent("login");
+
+      setUserLoginCredentials({ ...userLoginCredentials, email: userRegistrationCredentials.email });
+    } catch (e: any) {
+      alert(e.response.data);
+    }
+  };
+
+  const login = async () => {
+    try {
+      const response = await api.post("/auth/login", JSON.stringify({
+        email: userLoginCredentials.email,
+        password: userLoginCredentials.password,
+      }), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.data) {
+        localStorage.setItem("userTokenData", JSON.stringify(response.data));
+
+        navigate("/tasks");
+      } else {
+        alert("Erro: Algo deu errado no login.");
+      }
     } catch (e: any) {
       alert(e.response.data);
     }
@@ -65,16 +98,16 @@ const Home = () => {
             type="text"
             placeholder="Email"
             className="outline-none px-3 py-2 w-full"
-            onChange={(e) => setUserCredentials({ ...userCredentials, email: e.target.value })}
-            value={userCredentials.email}
+            onChange={(e) => setUserRegistrationCredentials({ ...userRegistrationCredentials, email: e.target.value })}
+            value={userRegistrationCredentials.email}
           />
 
           <input
             type="password"
             placeholder="Senha"
             className="outline-none px-3 py-2 w-full"
-            onChange={(e) => setUserCredentials({ ...userCredentials, password: e.target.value })}
-            value={userCredentials.password}
+            onChange={(e) => setUserRegistrationCredentials({ ...userRegistrationCredentials, password: e.target.value })}
+            value={userRegistrationCredentials.password}
           />
 
           <button
@@ -97,10 +130,28 @@ const Home = () => {
 
           <h2 className="font-semibold text-3xl">Entrar</h2>
 
-          <input type="text" placeholder="Email" className="outline-none px-3 py-2 w-full" />
-          <input type="password" placeholder="Senha" className="outline-none px-3 py-2 w-full" />
+          <input
+            type="text"
+            placeholder="Email"
+            className="outline-none px-3 py-2 w-full"
+            onChange={(e) => setUserLoginCredentials({ ...userLoginCredentials, email: e.target.value })}
+            value={userLoginCredentials.email}
+          />
 
-          <button className="bg-green-600 text-white py-2 px-4 w-full hover:bg-green-500">Entrar</button>
+          <input
+            type="password"
+            placeholder="Senha"
+            className="outline-none px-3 py-2 w-full"
+            onChange={(e) => setUserLoginCredentials({ ...userLoginCredentials, password: e.target.value })}
+            value={userLoginCredentials.password}
+          />
+
+          <button
+            className="bg-green-600 text-white py-2 px-4 w-full hover:bg-green-500"
+            onClick={login}
+          >
+            Entrar
+          </button>
         </div>
       )}
     </div>

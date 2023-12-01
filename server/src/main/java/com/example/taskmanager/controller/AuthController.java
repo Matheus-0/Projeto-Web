@@ -18,8 +18,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody UserAccountCredentialsDTO userAccountCredentialsDTO) {
-        System.out.println(userAccountCredentialsDTO);
-
         return authService.login(userAccountCredentialsDTO);
     }
 
