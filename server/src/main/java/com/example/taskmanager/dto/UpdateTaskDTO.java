@@ -5,12 +5,12 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class CreateTaskDTO {
+public class UpdateTaskDTO {
 
     private String name;
     private int duration;
     private LocalDate dueDate;
     private String category;
-    private String email;
+    private Long taskId;
 
 }

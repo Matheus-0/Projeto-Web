@@ -2,6 +2,7 @@ package com.example.taskmanager.service;
 
 import com.example.taskmanager.dto.CreateTaskDTO;
 import com.example.taskmanager.dto.GetUserTasksDTO;
+import com.example.taskmanager.dto.UpdateTaskDTO;
 import com.example.taskmanager.model.Task;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.TaskRepository;
@@ -24,10 +25,11 @@ public class TaskService {
 
     public ResponseEntity<String> createTask(CreateTaskDTO createTaskDTO) {
         try {
-            User user = userRepository.findById(createTaskDTO.getUserId()).orElse(null);
+            User user = userRepository.findByEmail(createTaskDTO.getEmail()).orElse(null);
 
             if (user == null) {
-                return ResponseEntity.ok("Erro: Usuário não existe no sistema.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Erro: Usuário não existe no sistema.");
             } else {
                 Task task = new Task(
                         createTaskDTO.getName(),
@@ -54,7 +56,8 @@ public class TaskService {
             User user = userRepository.findByEmail(email).orElse(null);
 
             if (user == null) {
-                return ResponseEntity.ok("Erro: Usuário não existe no sistema.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Erro: Usuário não existe no sistema.");
             } else {
                 ArrayList<Task> tasks = repository.findByUser(user).orElseThrow();
 
@@ -65,6 +68,31 @@ public class TaskService {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro: Algo deu errado ao buscar as tarefas do usuário.");
+        }
+    }
+
+    public ResponseEntity updateTask(UpdateTaskDTO updateTaskDTO) {
+        try {
+            Task task = repository.findById(updateTaskDTO.getTaskId()).orElse(null);
+
+            if (task == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Erro: Tarefa não existe no sistema.");
+            } else {
+                task.setName(updateTaskDTO.getName());
+                task.setCategory(updateTaskDTO.getCategory());
+                task.setDuration(updateTaskDTO.getDuration());
+                task.setDueDate(updateTaskDTO.getDueDate());
+
+                repository.save(task);
+
+                return ResponseEntity.ok("Tarefa atualizada com sucesso!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro: Algo deu errado na atualização da tarefa.");
         }
     }
 
