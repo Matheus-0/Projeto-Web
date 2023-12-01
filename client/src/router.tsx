@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import Home from "./pages/home";
+import Tasks from "./pages/tasks";
 
 import { RequireAuth, RequireNoAuth } from "./utils/auth";
 
@@ -17,7 +18,7 @@ const router = createBrowserRouter([
     path: "/tasks",
     element: (
       <RequireAuth>
-        <></>
+        <Tasks />
       </RequireAuth>
     ),
   }
