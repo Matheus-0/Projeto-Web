@@ -1,6 +1,7 @@
 package com.example.taskmanager.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 
@@ -15,6 +16,7 @@ public class Task {
     private String name;
     private int duration;
     private LocalDate dueDate;
+    @CreationTimestamp
     private LocalDate createdDate;
     private String category;
 

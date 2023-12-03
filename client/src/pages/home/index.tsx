@@ -8,42 +8,59 @@ import api from "../../service/api";
 const Home = () => {
   const navigate = useNavigate();
 
-  const [shownComponent, setShownComponent] = useState<"login" | "none" | "register">("none");
+  const [shownComponent, setShownComponent] = useState<
+    "login" | "none" | "register"
+  >("none");
 
-  const [userRegistrationCredentials, setUserRegistrationCredentials] = useState({ email: "", password: "" });
-  const [userLoginCredentials, setUserLoginCredentials] = useState({ email: "", password: "" });
+  const [userRegistrationCredentials, setUserRegistrationCredentials] =
+    useState({ email: "", password: "" });
+  const [userLoginCredentials, setUserLoginCredentials] = useState({
+    email: "",
+    password: "",
+  });
 
   const createAccount = async () => {
     try {
-      const response = await api.post("/user/register", JSON.stringify({
-        email: userRegistrationCredentials.email,
-        password: userRegistrationCredentials.password,
-      }), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.post(
+        "/user/register",
+        JSON.stringify({
+          email: userRegistrationCredentials.email,
+          password: userRegistrationCredentials.password,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       alert(response.data);
 
       setShownComponent("login");
 
-      setUserLoginCredentials({ ...userLoginCredentials, email: userRegistrationCredentials.email });
+      setUserLoginCredentials({
+        ...userLoginCredentials,
+        email: userRegistrationCredentials.email,
+      });
     } catch (e: any) {
-      alert(e.response.data);
+      alert("Não foi possível criar a conta.");
     }
   };
 
   const login = async () => {
     try {
-      const response = await api.post("/auth/login", JSON.stringify({
-        email: userLoginCredentials.email,
-        password: userLoginCredentials.password,
-      }), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.post(
+        "/auth/login",
+        JSON.stringify({
+          email: userLoginCredentials.email,
+          password: userLoginCredentials.password,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.data) {
         localStorage.setItem("userTokenData", JSON.stringify(response.data));
@@ -61,7 +78,9 @@ const Home = () => {
     <div className="flex flex-col h-screen items-center justify-center">
       {shownComponent === "none" && (
         <>
-          <h1 className="font-semibold text-3xl">Bem-vindo ao gerenciador de tarefas!</h1>
+          <h1 className="font-semibold text-3xl">
+            Bem-vindo ao gerenciador de tarefas!
+          </h1>
 
           <h2 className="text-2xl mt-8">Escolha uma opção:</h2>
 
@@ -98,7 +117,12 @@ const Home = () => {
             type="text"
             placeholder="Email"
             className="outline-none px-3 py-2 w-full"
-            onChange={(e) => setUserRegistrationCredentials({ ...userRegistrationCredentials, email: e.target.value })}
+            onChange={(e) =>
+              setUserRegistrationCredentials({
+                ...userRegistrationCredentials,
+                email: e.target.value,
+              })
+            }
             value={userRegistrationCredentials.email}
           />
 
@@ -106,7 +130,12 @@ const Home = () => {
             type="password"
             placeholder="Senha"
             className="outline-none px-3 py-2 w-full"
-            onChange={(e) => setUserRegistrationCredentials({ ...userRegistrationCredentials, password: e.target.value })}
+            onChange={(e) =>
+              setUserRegistrationCredentials({
+                ...userRegistrationCredentials,
+                password: e.target.value,
+              })
+            }
             value={userRegistrationCredentials.password}
           />
 
@@ -134,7 +163,12 @@ const Home = () => {
             type="text"
             placeholder="Email"
             className="outline-none px-3 py-2 w-full"
-            onChange={(e) => setUserLoginCredentials({ ...userLoginCredentials, email: e.target.value })}
+            onChange={(e) =>
+              setUserLoginCredentials({
+                ...userLoginCredentials,
+                email: e.target.value,
+              })
+            }
             value={userLoginCredentials.email}
           />
 
@@ -142,7 +176,12 @@ const Home = () => {
             type="password"
             placeholder="Senha"
             className="outline-none px-3 py-2 w-full"
-            onChange={(e) => setUserLoginCredentials({ ...userLoginCredentials, password: e.target.value })}
+            onChange={(e) =>
+              setUserLoginCredentials({
+                ...userLoginCredentials,
+                password: e.target.value,
+              })
+            }
             value={userLoginCredentials.password}
           />
 
