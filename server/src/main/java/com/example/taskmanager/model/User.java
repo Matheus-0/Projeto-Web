@@ -1,9 +1,16 @@
 package com.example.taskmanager.model;
 
+import com.example.taskmanager.constants.UserTypesEnum;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table
+@Getter
+@Setter
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -15,28 +22,7 @@ public class User {
 
     private String password;
 
-    public User() {
-    }
-
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    @Enumerated(EnumType.STRING)
+    private UserTypesEnum userType;
 
 }

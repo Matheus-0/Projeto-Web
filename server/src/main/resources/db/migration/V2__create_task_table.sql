@@ -6,5 +6,5 @@ CREATE TABLE task (
     created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     category VARCHAR(255) NULL,
     user_id BIGINT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );

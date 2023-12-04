@@ -1,6 +1,7 @@
 package com.example.taskmanager.controller;
 
 import com.example.taskmanager.dto.UserRegistrationDTO;
+import com.example.taskmanager.model.User;
 import com.example.taskmanager.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,14 +21,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/")
+    public ResponseEntity<List<User>> findAll() {
+        List<User> users = userService.findAll();
+        return ResponseEntity.ok(users);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDTO userRegistrationDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .toList();
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erros de validação: " + errors);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dados inválidos.");
         }
 
         return userService.registerUser(userRegistrationDTO);

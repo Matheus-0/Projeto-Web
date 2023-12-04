@@ -1,5 +1,6 @@
 package com.example.taskmanager.service;
 
+import com.example.taskmanager.constants.UserTypesEnum;
 import com.example.taskmanager.dto.UserRegistrationDTO;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.UserRepository;
@@ -9,11 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    public List<User> findAll() {
+        return this.userRepository.findAll();
+    }
 
     public ResponseEntity<String> registerUser(UserRegistrationDTO userRegistrationDTO) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -28,6 +35,7 @@ public class UserService {
 
             user.setEmail(userRegistrationDTO.getEmail());
             user.setPassword(encoder.encode(userRegistrationDTO.getPassword()));
+            user.setUserType(UserTypesEnum.USER);
 
             userRepository.save(user);
 
