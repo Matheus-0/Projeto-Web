@@ -16,8 +16,6 @@ public class CreateTaskDTO {
     @NotNull
     private LocalDate dueDate;
     @NotEmpty
-    private String category;
-    @NotEmpty
     private String email;
 
 }

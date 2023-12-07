@@ -22,7 +22,6 @@ public class Task {
     private LocalDate dueDate;
     @CreationTimestamp
     private LocalDate createdDate;
-    private String category;
     @Enumerated(EnumType.STRING)
     private TaskStatusEnum status;
     @ManyToOne
@@ -32,11 +31,10 @@ public class Task {
     public Task() {
     }
 
-    public Task(String name, int duration, LocalDate dueDate, String category, User user, TaskStatusEnum status) {
+    public Task(String name, int duration, LocalDate dueDate, User user, TaskStatusEnum status) {
         this.name = name;
         this.duration = duration;
         this.dueDate = dueDate;
-        this.category = category;
         this.user = user;
         this.status = status;
     }
