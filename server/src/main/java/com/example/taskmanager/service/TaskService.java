@@ -37,7 +37,7 @@ public class TaskService {
                         createTaskDTO.getDuration(),
                         createTaskDTO.getDueDate(),
                         user,
-                        TaskStatusEnum.PENDING
+                        createTaskDTO.getStatus()
                 );
 
                 repository.save(task);
@@ -83,6 +83,7 @@ public class TaskService {
                 task.setName(updateTaskDTO.getName());
                 task.setDuration(updateTaskDTO.getDuration());
                 task.setDueDate(updateTaskDTO.getDueDate());
+                task.setStatus(updateTaskDTO.getStatus());
 
                 repository.save(task);
 

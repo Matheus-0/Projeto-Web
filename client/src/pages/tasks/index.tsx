@@ -16,16 +16,24 @@ const statusToText = {
 const statusToColor = {
   PENDING: "bg-[#F5F5F7]",
   IN_PROGRESS: "bg-[#4192BF4D]",
-  FINISHED: "bg-[#72C1AF4D]",
+  FINISHED: "bg-[#40D67F4D]",
 };
 
 const Tasks = () => {
   const navigate = useNavigate();
 
   const [userTasks, setUserTasks] = useState([]);
+  const [pendingTasks, setPendingTasks] = useState([]);
+  const [inProgressTasks, setInProgressTasks] = useState([]);
+  const [finishedTasks, setFinishedTasks] = useState([]);
   const [taskCreationData, setTaskCreationData] = useState({
     name: "",
     duration: 0,
+    status: "PENDING",
+    dueDate: "",
+  });
+  const [taskSearchData, setTaskSearchData] = useState({
+    name: "",
     dueDate: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,7 +49,7 @@ const Tasks = () => {
     }
   };
 
-  const getUserTasks = async () => {
+  const getUserTasks = async (taskName = "", taskDueDate = "") => {
     const userTokenData = getUserTokenData();
 
     try {
@@ -52,6 +60,8 @@ const Tasks = () => {
         },
         params: {
           email: userTokenData.username,
+          name: taskName,
+          dueDate: taskDueDate,
         },
       });
 
@@ -74,6 +84,7 @@ const Tasks = () => {
       dueDate: task.dueDate,
       duration: task.duration,
       name: task.name,
+      status: task.status,
     });
   };
 
@@ -101,6 +112,18 @@ const Tasks = () => {
     } catch (e: any) {
       alert(e.response.data);
     }
+  };
+
+  const handleSearch = () => {
+    getUserTasks(taskSearchData.name, taskSearchData.dueDate);
+  };
+
+  const handleFilterCleanUp = () => {
+    setTaskSearchData({
+      dueDate: "",
+      name: "",
+    });
+    getUserTasks();
   };
 
   const handleSubmit = async (e: any) => {
@@ -139,6 +162,7 @@ const Tasks = () => {
       setTaskCreationData({
         name: "",
         duration: 0,
+        status: "PENDING",
         dueDate: "",
       });
 
@@ -154,6 +178,12 @@ const Tasks = () => {
     getUserTasks();
   }, []);
 
+  useEffect(() => {
+    setPendingTasks(userTasks.filter((task: any) => task.status === "PENDING"));
+    setInProgressTasks(userTasks.filter((task: any) => task.status === "IN_PROGRESS"));
+    setFinishedTasks(userTasks.filter((task: any) => task.status === "FINISHED"));
+  }, [userTasks]);
+
   return (
     <div className="flex flex-col p-8">
       <button
@@ -166,7 +196,7 @@ const Tasks = () => {
       </button>
 
       <button
-        className="flex items-center gap-2 bg-green-700 text-white absolute right-8 bottom-8 p-2"
+        className="flex items-center gap-2 bg-green-700 text-white fixed right-8 bottom-8 p-2"
         onClick={() => {
           setModalOpen(true);
           setTaskToEditId(-1);
@@ -211,11 +241,23 @@ const Tasks = () => {
               value={taskCreationData.duration}
               onChange={(e) => setTaskCreationData({ ...taskCreationData, duration: Number(e.target.value) })}
             />
+
+            <select
+              name="status"
+              id=""
+              className="p-2 outline-none border-r-transparent border-r-4"
+              value={taskCreationData.status}
+              onChange={(e) => setTaskCreationData({ ...taskCreationData, status: e.target.value })}
+            >
+              <option value="PENDING">Pendente</option>
+              <option value="IN_PROGRESS">Em progresso</option>
+              <option value="FINISHED">Finalizado</option>
+            </select>
             
             <input
               type="date"
               name="dueDate"
-              placeholder="Data de conclusão"
+              placeholder="Prazo final"
               className="p-2 outline-none"
               value={taskCreationData.dueDate}
               onChange={(e) => setTaskCreationData({ ...taskCreationData, dueDate: e.target.value })}
@@ -230,39 +272,144 @@ const Tasks = () => {
 
       <h1 className="font-semibold text-3xl self-center">Gerenciamento de tarefas</h1>
 
-      <h1 className="mt-10 font-semibold text-3xl">Tarefas pendentes</h1>
+      <div className="mt-10 flex gap-4 justify-center">
+        <input
+          type="text"
+          name="taskName"
+          placeholder="Nome da tarefa"
+          className="p-2 outline-none bg-slate-100"
+          value={taskSearchData.name}
+          onChange={(e) => setTaskSearchData({ ...taskSearchData, name: e.target.value })}
+        />
 
-      <div className="mt-10 grid grid-cols-4 gap-6">
-        {userTasks.length > 0 && userTasks.map((task: any) => (
-          <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
-            <div>
-              <h1 className="text-xl font-semibold">{task.name}</h1>
+        <input
+          type="date"
+          name="taskDueDate"
+          placeholder="Data"
+          className="p-2 outline-none bg-slate-100"
+          value={taskSearchData.dueDate}
+          onChange={(e) => setTaskSearchData({ ...taskSearchData, dueDate: e.target.value })}
+        />
 
+        <button
+          className="bg-green-700 text-white p-2"
+          onClick={handleSearch}
+        >
+          Buscar
+        </button>
 
-            </div>
-            <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
-            <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
-            <p className="mt-2"><strong>Data de conclusão:</strong> {task.dueDate}</p>
-            <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
-            <div className="mt-6 flex gap-2">
-              <button
-                className="bg-green-700 text-white p-2"
-                onClick={() => handleEditButtonClick(task)}
-              >
-                Editar
-              </button>
-
-              <button
-                className="bg-red-600 text-white p-2"
-                onClick={() => handleDeleteButtonClick(task)}
-              >
-                Apagar
-              </button>
-            </div>
-            
-          </div>
-        ))}
+        <button
+          className="bg-red-600 text-white p-2"
+          onClick={handleFilterCleanUp}
+        >
+          Limpar filtros
+        </button>
       </div>
+
+      {pendingTasks.length > 0 && (
+        <>
+          <h1 className="mt-10 font-semibold text-3xl">Tarefas pendentes</h1>
+
+          <div className="mt-10 grid grid-cols-4 gap-6">
+            {pendingTasks.map((task: any) => (
+                <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
+                  <div>
+                    <h1 className="text-xl font-semibold">{task.name}</h1>
+                  </div>
+                  <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
+                  <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
+                  <p className="mt-2"><strong>Prazo final:</strong> {task.dueDate}</p>
+                  <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
+                  <div className="mt-6 flex gap-2">
+                    <button
+                      className="bg-green-700 text-white p-2"
+                      onClick={() => handleEditButtonClick(task)}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      className="bg-red-600 text-white p-2"
+                      onClick={() => handleDeleteButtonClick(task)}
+                    >
+                      Apagar
+                    </button>
+                  </div>
+                </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {inProgressTasks.length > 0 && (
+        <>
+          <h1 className="mt-10 font-semibold text-3xl">Tarefas em progresso</h1>
+
+          <div className="mt-10 grid grid-cols-4 gap-6">
+            {inProgressTasks.map((task: any) => (
+                <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
+                  <div>
+                    <h1 className="text-xl font-semibold">{task.name}</h1>
+                  </div>
+                  <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
+                  <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
+                  <p className="mt-2"><strong>Prazo final:</strong> {task.dueDate}</p>
+                  <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
+                  <div className="mt-6 flex gap-2">
+                    <button
+                      className="bg-green-700 text-white p-2"
+                      onClick={() => handleEditButtonClick(task)}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      className="bg-red-600 text-white p-2"
+                      onClick={() => handleDeleteButtonClick(task)}
+                    >
+                      Apagar
+                    </button>
+                  </div>
+                </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {finishedTasks.length > 0 && (
+        <>
+          <h1 className="mt-10 font-semibold text-3xl">Tarefas finalizadas</h1>
+
+          <div className="mt-10 grid grid-cols-4 gap-6">
+            {finishedTasks.map((task: any) => (
+                <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
+                  <div>
+                    <h1 className="text-xl font-semibold">{task.name}</h1>
+                  </div>
+                  <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
+                  <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
+                  <p className="mt-2"><strong>Prazo final:</strong> {task.dueDate}</p>
+                  <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
+                  <div className="mt-6 flex gap-2">
+                    <button
+                      className="bg-green-700 text-white p-2"
+                      onClick={() => handleEditButtonClick(task)}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      className="bg-red-600 text-white p-2"
+                      onClick={() => handleDeleteButtonClick(task)}
+                    >
+                      Apagar
+                    </button>
+                  </div>
+                </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
