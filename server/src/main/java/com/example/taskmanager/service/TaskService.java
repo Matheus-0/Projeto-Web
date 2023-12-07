@@ -36,7 +36,6 @@ public class TaskService {
                         createTaskDTO.getName(),
                         createTaskDTO.getDuration(),
                         createTaskDTO.getDueDate(),
-                        createTaskDTO.getCategory(),
                         user,
                         TaskStatusEnum.PENDING
                 );
@@ -82,7 +81,6 @@ public class TaskService {
                         .body("Erro: Tarefa não existe no sistema.");
             } else {
                 task.setName(updateTaskDTO.getName());
-                task.setCategory(updateTaskDTO.getCategory());
                 task.setDuration(updateTaskDTO.getDuration());
                 task.setDueDate(updateTaskDTO.getDueDate());
 
