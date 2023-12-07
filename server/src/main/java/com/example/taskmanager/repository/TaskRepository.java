@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
-
-    Optional<ArrayList<Task>> findByUser(User user);
-
-    Optional<ArrayList<Task>> findByUserOrderByDurationDesc(User user);
-    Optional<ArrayList<Task>> findTasksByNameIsLike(String name);
+    Optional<ArrayList<Task>> findTasksByUserIsAndNameContaining(User user, String name);
 
 }
