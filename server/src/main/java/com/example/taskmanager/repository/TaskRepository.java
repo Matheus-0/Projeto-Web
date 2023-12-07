@@ -12,5 +12,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<ArrayList<Task>> findByUser(User user);
 
     Optional<ArrayList<Task>> findByUserOrderByDurationDesc(User user);
+    Optional<ArrayList<Task>> findTasksByNameIsLike(String name);
 
 }

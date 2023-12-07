@@ -19,7 +19,11 @@ public class UserService {
     private UserRepository userRepository;
 
     public List<User> findAll() {
-        return this.userRepository.findAll();
+        try {
+            return this.userRepository.findAll();
+        } catch (Exception e) {
+            throw new Error("Erro ao buscar usuários");
+        }
     }
 
     public ResponseEntity<String> registerUser(UserRegistrationDTO userRegistrationDTO) {

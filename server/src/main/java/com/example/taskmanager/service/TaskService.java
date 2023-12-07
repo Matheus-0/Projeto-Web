@@ -1,5 +1,6 @@
 package com.example.taskmanager.service;
 
+import com.example.taskmanager.constants.TaskStatusEnum;
 import com.example.taskmanager.dto.CreateTaskDTO;
 import com.example.taskmanager.dto.UpdateTaskDTO;
 import com.example.taskmanager.model.Task;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -35,7 +37,8 @@ public class TaskService {
                         createTaskDTO.getDuration(),
                         createTaskDTO.getDueDate(),
                         createTaskDTO.getCategory(),
-                        user
+                        user,
+                        TaskStatusEnum.PENDING
                 );
 
                 repository.save(task);
@@ -105,6 +108,20 @@ public class TaskService {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro: Algo deu errado ao remover a tarefa.");
+        }
+    }
+
+    public List<Task> getUserTasksByName(String email, String name) throws Exception {
+        try {
+            User user = userRepository.findByEmail(email).orElse(null);
+
+            if (user == null) {
+                throw new Error("Usuário não encontrado");
+            }
+
+            return this.repository.findTasksByNameIsLike(name).orElseThrow();
+        } catch (Exception e) {
+            throw new Exception();
         }
     }
 
