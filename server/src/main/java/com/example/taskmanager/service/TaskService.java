@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class TaskService {
         }
     }
 
-    public ResponseEntity getUserTasks(String email, String name) {
+    public ResponseEntity getUserTasks(String email, String name, String dueDate) {
         try {
             User user = userRepository.findByEmail(email).orElse(null);
 
@@ -61,7 +62,13 @@ public class TaskService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Erro: Usuário não existe no sistema.");
             } else {
-                ArrayList<Task> tasks = repository.findTasksByUserIsAndNameContaining(user, name).orElseThrow();
+                ArrayList<Task> tasks;
+
+                if (dueDate == null) {
+                    tasks = repository.findTasksByUserIsAndNameContaining(user, name).orElseThrow();
+                } else {
+                    tasks = repository.findTasksByUserIsAndNameContainingAndDueDateIs(user, name, LocalDate.parse(dueDate)).orElseThrow();
+                }
 
                 return ResponseEntity.ok(tasks);
             }
