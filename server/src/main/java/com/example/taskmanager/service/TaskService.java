@@ -52,7 +52,7 @@ public class TaskService {
         }
     }
 
-    public ResponseEntity getUserTasks(String email) {
+    public ResponseEntity getUserTasks(String email, String name) {
         try {
             User user = userRepository.findByEmail(email).orElse(null);
 
@@ -60,7 +60,7 @@ public class TaskService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body("Erro: Usuário não existe no sistema.");
             } else {
-                ArrayList<Task> tasks = repository.findByUserOrderByDurationDesc(user).orElseThrow();
+                ArrayList<Task> tasks = repository.findTasksByUserIsAndNameContaining(user, name).orElseThrow();
 
                 return ResponseEntity.ok(tasks);
             }
@@ -106,20 +106,6 @@ public class TaskService {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro: Algo deu errado ao remover a tarefa.");
-        }
-    }
-
-    public List<Task> getUserTasksByName(String email, String name) throws Exception {
-        try {
-            User user = userRepository.findByEmail(email).orElse(null);
-
-            if (user == null) {
-                throw new Error("Usuário não encontrado");
-            }
-
-            return this.repository.findTasksByNameIsLike(name).orElseThrow();
-        } catch (Exception e) {
-            throw new Exception();
         }
     }
 

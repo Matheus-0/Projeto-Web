@@ -26,8 +26,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity getUserTasks(@RequestParam String email) {
-        return taskService.getUserTasks(email);
+    public ResponseEntity getUserTasks(@RequestParam String email, @RequestParam(defaultValue = "", required = false) String name) {
+        return taskService.getUserTasks(email, name);
     }
 
     @PutMapping
@@ -38,18 +38,6 @@ public class TaskController {
     @DeleteMapping
     public ResponseEntity deleteTask(@RequestParam Long id) {
         return taskService.deleteTask(id);
-    }
-
-    @GetMapping("/filtered")
-    public ResponseEntity<List<Task>> deleteTask(@RequestParam String email, @RequestParam String name) {
-        try {
-            List<Task> tasks = this.taskService.getUserTasksByName(email, name);
-            return ResponseEntity.ok(tasks);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ArrayList<>());
-        }
     }
 
 }
