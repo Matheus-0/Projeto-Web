@@ -63,7 +63,7 @@ public class TaskService {
             } else {
                 ArrayList<Task> tasks;
 
-                if (dueDate == null) {
+                if (dueDate == null || dueDate.equals("")) {
                     tasks = repository.findTasksByUserIsAndNameContaining(user, name).orElseThrow();
                 } else {
                     tasks = repository.findTasksByUserIsAndNameContainingAndDueDateIs(user, name, LocalDate.parse(dueDate)).orElseThrow();
