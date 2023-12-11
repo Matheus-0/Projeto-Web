@@ -5,9 +5,9 @@ import com.example.taskmanager.dto.UpdateTaskDTO;
 import com.example.taskmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/task")
@@ -17,7 +17,12 @@ public class TaskController {
     private TaskService taskService;
 
     @PostMapping
-    public ResponseEntity<String> createTask(@RequestBody CreateTaskDTO createTaskDTO) {
+    public ResponseEntity<String> createTask(
+            @RequestBody CreateTaskDTO createTaskDTO,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        System.out.println(userDetails);
+
         return taskService.createTask(createTaskDTO);
     }
 
