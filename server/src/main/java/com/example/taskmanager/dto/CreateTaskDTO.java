@@ -18,7 +18,5 @@ public class CreateTaskDTO {
     private TaskStatusEnum status;
     @NotNull
     private LocalDate dueDate;
-    @NotEmpty
-    private String email;
 
 }

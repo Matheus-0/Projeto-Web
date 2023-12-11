@@ -21,9 +21,7 @@ public class TaskController {
             @RequestBody CreateTaskDTO createTaskDTO,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        System.out.println(userDetails);
-
-        return taskService.createTask(createTaskDTO);
+        return taskService.createTask(createTaskDTO, userDetails);
     }
 
     @GetMapping

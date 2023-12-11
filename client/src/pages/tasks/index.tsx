@@ -137,7 +137,6 @@ const Tasks = () => {
       if (taskToEditId === -1) {
         response = await api.post("/task", {
           ...taskCreationData,
-          email: userTokenData.username,
         }, {
           headers: {
             "Content-Type": "application/json",
