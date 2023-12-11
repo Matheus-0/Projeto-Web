@@ -36,7 +36,7 @@ public class AuthService {
             TokenDTO tokenResponse;
 
             if (user != null) {
-                tokenResponse = tokenProvider.createAccessToken(username);
+                tokenResponse = tokenProvider.createAccessToken(username, user.getRoles());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Erro: Usuário não encontrado no sistema.");

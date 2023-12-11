@@ -2,7 +2,9 @@ package com.example.taskmanager.service;
 
 import com.example.taskmanager.constants.UserTypesEnum;
 import com.example.taskmanager.dto.UserRegistrationDTO;
+import com.example.taskmanager.model.Permission;
 import com.example.taskmanager.model.User;
+import com.example.taskmanager.repository.PermissionRepository;
 import com.example.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    PermissionRepository permissionRepository;
 
     public List<User> findAll() {
         try {
@@ -39,7 +44,15 @@ public class UserService {
 
             user.setEmail(userRegistrationDTO.getEmail());
             user.setPassword(encoder.encode(userRegistrationDTO.getPassword()));
-            user.setUserType(UserTypesEnum.USER);
+
+            Permission commonUserPermission = permissionRepository.findPermissionByDescription("COMMON_USER").orElse(null);
+
+            if (commonUserPermission == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Erro: ID de permissão não encontrado!");
+            }
+
+            user.setPermissions(List.of(commonUserPermission));
 
             userRepository.save(user);
 
