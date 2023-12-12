@@ -1,6 +1,5 @@
 package com.example.taskmanager.service;
 
-import com.example.taskmanager.constants.TaskStatusEnum;
 import com.example.taskmanager.dto.CreateTaskDTO;
 import com.example.taskmanager.dto.UpdateTaskDTO;
 import com.example.taskmanager.model.Task;
@@ -10,11 +9,11 @@ import com.example.taskmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class TaskService {
@@ -25,9 +24,9 @@ public class TaskService {
     @Autowired
     private UserRepository userRepository;
 
-    public ResponseEntity<String> createTask(CreateTaskDTO createTaskDTO) {
+    public ResponseEntity<String> createTask(CreateTaskDTO createTaskDTO, UserDetails userDetails) {
         try {
-            User user = userRepository.findByEmail(createTaskDTO.getEmail()).orElse(null);
+            User user = userRepository.findByEmail(userDetails.getUsername()).orElse(null);
 
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)

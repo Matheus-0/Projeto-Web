@@ -1,6 +1,5 @@
 package com.example.taskmanager.model;
 
-import com.example.taskmanager.constants.UserTypesEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

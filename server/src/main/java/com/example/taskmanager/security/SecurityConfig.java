@@ -26,9 +26,8 @@ public class SecurityConfig {
     private JWTTokenProvider tokenProvider;
 
     private static final String[] PUBLIC_MATCHERS = {
-            "**",
-//            "/api/user/register",
-//            "/api/auth/login",
+            "/api/user/register",
+            "/api/auth/login"
     };
 
     @Bean
@@ -44,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(PUBLIC_MATCHERS).permitAll()
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(
                         sessionManagement -> sessionManagement
