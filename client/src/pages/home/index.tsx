@@ -127,6 +127,13 @@ const Home = () => {
           >
             Entre em contato conosco
           </Link>
+
+          <Link
+            className="bg-red-500 text-white py-2 px-4 hover:bg-red-400 mt-4"
+            to="/about-us"
+          >
+            Quem somos
+          </Link>
         </>
       )}
 
