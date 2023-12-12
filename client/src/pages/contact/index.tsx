@@ -53,7 +53,7 @@ const Contact = () => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
-            className="mt-4 w-full"
+            className="mt-4 w-full p-2"
           />
 
           <br />
