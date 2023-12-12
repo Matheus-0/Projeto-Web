@@ -14,8 +14,6 @@ export const RequireAuth = ({ children }: any) => {
 export const RequireNoAuth = ({ children }: any) => {
   const userTokenData = localStorage.getItem("userTokenData");
 
-  console.log(userTokenData);
-
   if (userTokenData) {
     return <Navigate to="/tasks" />;
   }
