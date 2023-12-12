@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { MdLogout, MdOutlineAdd, MdOutlineClose, MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
+import { MdAdminPanelSettings, MdLogout, MdOutlineAdd, MdOutlineClose, MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../service/api";
@@ -22,6 +22,7 @@ const statusToColor = {
 const Tasks = () => {
   const navigate = useNavigate();
 
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [userTasks, setUserTasks] = useState([]);
   const [pendingTasks, setPendingTasks] = useState([]);
   const [inProgressTasks, setInProgressTasks] = useState([]);
@@ -75,6 +76,10 @@ const Tasks = () => {
     localStorage.removeItem("userTokenData");
 
     navigate("/");
+  };
+
+  const navigateToAdminPage = () => {
+    navigate("/admin");
   };
 
   const handleEditButtonClick = (task: any) => {
@@ -178,6 +183,28 @@ const Tasks = () => {
   }, []);
 
   useEffect(() => {
+    const userTokenData = getUserTokenData();
+
+    const getUserRoles = async () => {
+      const response = await api.get("/user/type", {
+        headers: {
+          Authorization: "Bearer " + userTokenData.accessToken,
+        },
+      });
+
+      for (const result of response.data) {
+        if (result.authority && result.authority === "ADMIN") {
+          setIsUserAdmin(true);
+          
+          break;
+        }
+      }
+    };
+
+    getUserRoles();
+  }, []);
+
+  useEffect(() => {
     setPendingTasks(userTasks.filter((task: any) => task.status === "PENDING"));
     setInProgressTasks(userTasks.filter((task: any) => task.status === "IN_PROGRESS"));
     setFinishedTasks(userTasks.filter((task: any) => task.status === "FINISHED"));
@@ -193,6 +220,17 @@ const Tasks = () => {
         
         Sair
       </button>
+
+      {isUserAdmin && (
+        <button
+          className="flex items-center gap-2 bg-red-700 text-white absolute right-8 top-8 p-2"
+          onClick={navigateToAdminPage}
+        >
+          <MdAdminPanelSettings />
+          
+          Admin
+        </button>
+      )}
 
       <button
         className="flex items-center gap-2 bg-green-700 text-white fixed right-8 bottom-8 p-2"

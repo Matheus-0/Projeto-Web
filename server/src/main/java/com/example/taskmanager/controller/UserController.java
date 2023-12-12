@@ -7,13 +7,14 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/user")
@@ -23,6 +24,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<User>> findAll() {
         try {
             List<User> users = userService.findAll();
@@ -40,6 +42,17 @@ public class UserController {
         }
 
         return userService.registerUser(userRegistrationDTO);
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity deleteUser(@RequestParam Long id) {
+        return userService.deleteUser(id);
+    }
+
+    @GetMapping("/type")
+    public ResponseEntity getUserType(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(userDetails.getAuthorities());
     }
 
 }

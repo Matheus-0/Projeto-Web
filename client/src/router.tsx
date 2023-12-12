@@ -4,6 +4,7 @@ import Home from "./pages/home";
 import Tasks from "./pages/tasks";
 
 import { RequireAuth, RequireNoAuth } from "./utils/auth";
+import Admin from "./pages/admin";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,14 @@ const router = createBrowserRouter([
     element: (
       <RequireAuth>
         <Tasks />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <RequireAuth>
+        <Admin />
       </RequireAuth>
     ),
   }

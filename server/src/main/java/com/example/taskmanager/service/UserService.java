@@ -6,6 +6,7 @@ import com.example.taskmanager.model.Permission;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.PermissionRepository;
 import com.example.taskmanager.repository.UserRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class UserService {
         try {
             return this.userRepository.findAll();
         } catch (Exception e) {
-            throw new Error("Erro ao buscar usuários");
+            throw new Error("Erro ao buscar usuários.");
         }
     }
 
@@ -62,6 +63,33 @@ public class UserService {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro: Algo deu errado na criação de usuário.");
+        }
+    }
+
+    public ResponseEntity deleteUser(Long id) {
+        try {
+            User existingUser = userRepository.findById(id).orElse(null);
+
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Erro: Usuário não existe.");
+            }
+
+            for (var authority : existingUser.getAuthorities()) {
+                if (authority.getAuthority().equals(UserTypesEnum.ADMIN.getDescription())) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body("Erro: Não é permitido apagar um usuário admin.");
+                }
+            }
+
+            userRepository.deleteById(id);
+
+            return ResponseEntity.ok("Usuário removido com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro: Algo deu errado ao remover usuário.");
         }
     }
 
