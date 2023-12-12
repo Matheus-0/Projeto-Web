@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { MdArrowBack } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import api from "../../service/api";
 
@@ -43,7 +43,17 @@ const Home = () => {
         email: userRegistrationCredentials.email,
       });
     } catch (e: any) {
-      alert("Não foi possível criar a conta.");
+      alert(e.response.data);
+    }
+  };
+
+  const getUserTokenData = () => {
+    const userTokenData = localStorage.getItem("userTokenData");
+
+    if (userTokenData) {
+      return JSON.parse(userTokenData);
+    } else {
+      return null;
     }
   };
 
@@ -64,6 +74,17 @@ const Home = () => {
 
       if (response.data) {
         localStorage.setItem("userTokenData", JSON.stringify(response.data));
+
+        const userTokenData = getUserTokenData();
+        console.log("userTokenData.accessToken", userTokenData.accessToken);
+
+        const test = await api.get("/user/details", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + userTokenData.accessToken,
+          },
+        });
+        console.log(test);
 
         navigate("/tasks");
       } else {
@@ -99,6 +120,13 @@ const Home = () => {
               Entrar
             </button>
           </div>
+
+          <Link
+            className="bg-yellow-500 text-white py-2 px-4 hover:bg-yellow-400 mt-4"
+            to="/contact"
+          >
+            Entre em contato conosco
+          </Link>
         </>
       )}
 

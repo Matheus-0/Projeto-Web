@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { MdAdminPanelSettings, MdLogout, MdOutlineAdd, MdOutlineClose, MdOutlineDelete, MdOutlineEdit } from "react-icons/md";
+import { MdLogout, MdOutlineAdd, MdOutlineClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../service/api";
@@ -10,7 +10,7 @@ import api from "../../service/api";
 const statusToText = {
   PENDING: "Pendente",
   IN_PROGRESS: "Em progresso",
-  FINISHED: "Finalizado"
+  FINISHED: "Finalizado",
 };
 
 const statusToColor = {
@@ -68,7 +68,9 @@ const Tasks = () => {
 
       setUserTasks(response.data);
     } catch (e: any) {
-      alert("Erro: Ocorreu um erro inesperado ao obter tarefas, seu token pode ter expirado.");
+      alert(
+        "Erro: Ocorreu um erro inesperado ao obter tarefas, seu token pode ter expirado."
+      );
     }
   };
 
@@ -149,15 +151,19 @@ const Tasks = () => {
           },
         });
       } else {
-        response = await api.put("/task", {
-          ...taskCreationData,
-          taskId: taskToEditId,
-        }, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + userTokenData.accessToken,
+        response = await api.put(
+          "/task",
+          {
+            ...taskCreationData,
+            taskId: taskToEditId,
           },
-        })
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + userTokenData.accessToken,
+            },
+          }
+        );
       }
 
       setModalOpen(false);
@@ -195,7 +201,7 @@ const Tasks = () => {
       for (const result of response.data) {
         if (result.authority && result.authority === "ADMIN") {
           setIsUserAdmin(true);
-          
+
           break;
         }
       }
@@ -206,8 +212,12 @@ const Tasks = () => {
 
   useEffect(() => {
     setPendingTasks(userTasks.filter((task: any) => task.status === "PENDING"));
-    setInProgressTasks(userTasks.filter((task: any) => task.status === "IN_PROGRESS"));
-    setFinishedTasks(userTasks.filter((task: any) => task.status === "FINISHED"));
+    setInProgressTasks(
+      userTasks.filter((task: any) => task.status === "IN_PROGRESS")
+    );
+    setFinishedTasks(
+      userTasks.filter((task: any) => task.status === "FINISHED")
+    );
   }, [userTasks]);
 
   return (
@@ -217,7 +227,6 @@ const Tasks = () => {
         onClick={logout}
       >
         <MdLogout />
-        
         Sair
       </button>
 
@@ -227,7 +236,7 @@ const Tasks = () => {
           onClick={navigateToAdminPage}
         >
           <MdAdminPanelSettings />
-          
+
           Admin
         </button>
       )}
@@ -241,7 +250,6 @@ const Tasks = () => {
         disabled={modalOpen}
       >
         <MdOutlineAdd />
-        
         Adicionar tarefa
       </button>
 
@@ -256,9 +264,11 @@ const Tasks = () => {
           >
             <MdOutlineClose />
           </button>
-          
-          <h2 className="mt-4 font-semibold text-2xl self-center">Criar nova tarefa</h2>
-          
+
+          <h2 className="mt-4 font-semibold text-2xl self-center">
+            Criar nova tarefa
+          </h2>
+
           <form className="mt-4 flex flex-col gap-4" onSubmit={handleSubmit}>
             <input
               type="text"
@@ -266,7 +276,12 @@ const Tasks = () => {
               placeholder="Nome da tarefa"
               className="p-2 outline-none"
               value={taskCreationData.name}
-              onChange={(e) => setTaskCreationData({ ...taskCreationData, name: e.target.value })}
+              onChange={(e) =>
+                setTaskCreationData({
+                  ...taskCreationData,
+                  name: e.target.value,
+                })
+              }
             />
 
             <input
@@ -276,7 +291,12 @@ const Tasks = () => {
               min={1}
               className="p-2 outline-none"
               value={taskCreationData.duration}
-              onChange={(e) => setTaskCreationData({ ...taskCreationData, duration: Number(e.target.value) })}
+              onChange={(e) =>
+                setTaskCreationData({
+                  ...taskCreationData,
+                  duration: Number(e.target.value),
+                })
+              }
             />
 
             <select
@@ -284,20 +304,30 @@ const Tasks = () => {
               id=""
               className="p-2 outline-none border-r-transparent border-r-4"
               value={taskCreationData.status}
-              onChange={(e) => setTaskCreationData({ ...taskCreationData, status: e.target.value })}
+              onChange={(e) =>
+                setTaskCreationData({
+                  ...taskCreationData,
+                  status: e.target.value,
+                })
+              }
             >
               <option value="PENDING">Pendente</option>
               <option value="IN_PROGRESS">Em progresso</option>
               <option value="FINISHED">Finalizado</option>
             </select>
-            
+
             <input
               type="date"
               name="dueDate"
               placeholder="Prazo final"
               className="p-2 outline-none"
               value={taskCreationData.dueDate}
-              onChange={(e) => setTaskCreationData({ ...taskCreationData, dueDate: e.target.value })}
+              onChange={(e) =>
+                setTaskCreationData({
+                  ...taskCreationData,
+                  dueDate: e.target.value,
+                })
+              }
             />
 
             <button className="bg-green-700 text-white p-2" type="submit">
@@ -307,7 +337,9 @@ const Tasks = () => {
         </div>
       )}
 
-      <h1 className="font-semibold text-3xl self-center">Gerenciamento de tarefas</h1>
+      <h1 className="font-semibold text-3xl self-center">
+        Gerenciamento de tarefas
+      </h1>
 
       <div className="mt-10 flex gap-4 justify-center">
         <input
@@ -316,7 +348,9 @@ const Tasks = () => {
           placeholder="Nome da tarefa"
           className="p-2 outline-none bg-slate-100"
           value={taskSearchData.name}
-          onChange={(e) => setTaskSearchData({ ...taskSearchData, name: e.target.value })}
+          onChange={(e) =>
+            setTaskSearchData({ ...taskSearchData, name: e.target.value })
+          }
         />
 
         <input
@@ -325,13 +359,12 @@ const Tasks = () => {
           placeholder="Data"
           className="p-2 outline-none bg-slate-100"
           value={taskSearchData.dueDate}
-          onChange={(e) => setTaskSearchData({ ...taskSearchData, dueDate: e.target.value })}
+          onChange={(e) =>
+            setTaskSearchData({ ...taskSearchData, dueDate: e.target.value })
+          }
         />
 
-        <button
-          className="bg-green-700 text-white p-2"
-          onClick={handleSearch}
-        >
+        <button className="bg-green-700 text-white p-2" onClick={handleSearch}>
           Buscar
         </button>
 
@@ -349,30 +382,44 @@ const Tasks = () => {
 
           <div className="mt-10 grid grid-cols-4 gap-6">
             {pendingTasks.map((task: any) => (
-                <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
-                  <div>
-                    <h1 className="text-xl font-semibold">{task.name}</h1>
-                  </div>
-                  <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
-                  <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
-                  <p className="mt-2"><strong>Prazo final:</strong> {task.dueDate}</p>
-                  <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
-                  <div className="mt-6 flex gap-2">
-                    <button
-                      className="bg-green-700 text-white p-2"
-                      onClick={() => handleEditButtonClick(task)}
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      className="bg-red-600 text-white p-2"
-                      onClick={() => handleDeleteButtonClick(task)}
-                    >
-                      Apagar
-                    </button>
-                  </div>
+              <div
+                className={
+                  "flex flex-col p-4 " +
+                  statusToColor[task.status as keyof typeof statusToColor]
+                }
+              >
+                <div>
+                  <h1 className="text-xl font-semibold">{task.name}</h1>
                 </div>
+                <p className="mt-6">
+                  <strong>Duração:</strong> {task.duration} minutos
+                </p>
+                <p className="mt-2">
+                  <strong>Status:</strong>{" "}
+                  {statusToText[task.status as keyof typeof statusToText]}
+                </p>
+                <p className="mt-2">
+                  <strong>Prazo final:</strong> {task.dueDate}
+                </p>
+                <p className="mt-2">
+                  <strong>Data de criação:</strong> {task.createdDate}
+                </p>
+                <div className="mt-6 flex gap-2">
+                  <button
+                    className="bg-green-700 text-white p-2"
+                    onClick={() => handleEditButtonClick(task)}
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    className="bg-red-600 text-white p-2"
+                    onClick={() => handleDeleteButtonClick(task)}
+                  >
+                    Apagar
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </>
@@ -384,30 +431,44 @@ const Tasks = () => {
 
           <div className="mt-10 grid grid-cols-4 gap-6">
             {inProgressTasks.map((task: any) => (
-                <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
-                  <div>
-                    <h1 className="text-xl font-semibold">{task.name}</h1>
-                  </div>
-                  <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
-                  <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
-                  <p className="mt-2"><strong>Prazo final:</strong> {task.dueDate}</p>
-                  <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
-                  <div className="mt-6 flex gap-2">
-                    <button
-                      className="bg-green-700 text-white p-2"
-                      onClick={() => handleEditButtonClick(task)}
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      className="bg-red-600 text-white p-2"
-                      onClick={() => handleDeleteButtonClick(task)}
-                    >
-                      Apagar
-                    </button>
-                  </div>
+              <div
+                className={
+                  "flex flex-col p-4 " +
+                  statusToColor[task.status as keyof typeof statusToColor]
+                }
+              >
+                <div>
+                  <h1 className="text-xl font-semibold">{task.name}</h1>
                 </div>
+                <p className="mt-6">
+                  <strong>Duração:</strong> {task.duration} minutos
+                </p>
+                <p className="mt-2">
+                  <strong>Status:</strong>{" "}
+                  {statusToText[task.status as keyof typeof statusToText]}
+                </p>
+                <p className="mt-2">
+                  <strong>Prazo final:</strong> {task.dueDate}
+                </p>
+                <p className="mt-2">
+                  <strong>Data de criação:</strong> {task.createdDate}
+                </p>
+                <div className="mt-6 flex gap-2">
+                  <button
+                    className="bg-green-700 text-white p-2"
+                    onClick={() => handleEditButtonClick(task)}
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    className="bg-red-600 text-white p-2"
+                    onClick={() => handleDeleteButtonClick(task)}
+                  >
+                    Apagar
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </>
@@ -419,30 +480,44 @@ const Tasks = () => {
 
           <div className="mt-10 grid grid-cols-4 gap-6">
             {finishedTasks.map((task: any) => (
-                <div className={"flex flex-col p-4 " + statusToColor[task.status as keyof typeof statusToColor]}>
-                  <div>
-                    <h1 className="text-xl font-semibold">{task.name}</h1>
-                  </div>
-                  <p className="mt-6"><strong>Duração:</strong> {task.duration} minutos</p>
-                  <p className="mt-2"><strong>Status:</strong> {statusToText[task.status as keyof typeof statusToText]}</p>
-                  <p className="mt-2"><strong>Prazo final:</strong> {task.dueDate}</p>
-                  <p className="mt-2"><strong>Data de criação:</strong> {task.createdDate}</p>
-                  <div className="mt-6 flex gap-2">
-                    <button
-                      className="bg-green-700 text-white p-2"
-                      onClick={() => handleEditButtonClick(task)}
-                    >
-                      Editar
-                    </button>
-
-                    <button
-                      className="bg-red-600 text-white p-2"
-                      onClick={() => handleDeleteButtonClick(task)}
-                    >
-                      Apagar
-                    </button>
-                  </div>
+              <div
+                className={
+                  "flex flex-col p-4 " +
+                  statusToColor[task.status as keyof typeof statusToColor]
+                }
+              >
+                <div>
+                  <h1 className="text-xl font-semibold">{task.name}</h1>
                 </div>
+                <p className="mt-6">
+                  <strong>Duração:</strong> {task.duration} minutos
+                </p>
+                <p className="mt-2">
+                  <strong>Status:</strong>{" "}
+                  {statusToText[task.status as keyof typeof statusToText]}
+                </p>
+                <p className="mt-2">
+                  <strong>Prazo final:</strong> {task.dueDate}
+                </p>
+                <p className="mt-2">
+                  <strong>Data de criação:</strong> {task.createdDate}
+                </p>
+                <div className="mt-6 flex gap-2">
+                  <button
+                    className="bg-green-700 text-white p-2"
+                    onClick={() => handleEditButtonClick(task)}
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    className="bg-red-600 text-white p-2"
+                    onClick={() => handleDeleteButtonClick(task)}
+                  >
+                    Apagar
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </>

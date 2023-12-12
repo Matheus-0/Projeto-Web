@@ -5,6 +5,7 @@ import Tasks from "./pages/tasks";
 
 import { RequireAuth, RequireNoAuth } from "./utils/auth";
 import Admin from "./pages/admin";
+import Contact from "./pages/contact";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,11 @@ const router = createBrowserRouter([
         <Admin />
       </RequireAuth>
     ),
-  }
+  },
+  {
+    path: "/contact",
+    element: <Contact />,
+  },
 ]);
 
 export default router;
