@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { MdLogout, MdOutlineAdd, MdOutlineClose } from "react-icons/md";
+import { MdAdminPanelSettings, MdLogout, MdOutlineAdd, MdOutlineClose } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 import api from "../../service/api";
