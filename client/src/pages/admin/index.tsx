@@ -133,7 +133,7 @@ const Admin = () => {
 
       <div className="mt-10 flex flex-col gap-2">
         {users.map((user: any) => (
-          <div className="flex justify-between p-4 bg-slate-200">
+          <div className="flex justify-between items-center p-4 bg-slate-200">
             <div>
               <p>Email: {user.email}</p>
               <p>Tipo: {userTypeToText[user.permissions[0].authority as keyof typeof userTypeToText]}</p>
