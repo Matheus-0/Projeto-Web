@@ -47,16 +47,6 @@ const Home = () => {
     }
   };
 
-  const getUserTokenData = () => {
-    const userTokenData = localStorage.getItem("userTokenData");
-
-    if (userTokenData) {
-      return JSON.parse(userTokenData);
-    } else {
-      return null;
-    }
-  };
-
   const login = async () => {
     try {
       const response = await api.post(
@@ -74,17 +64,6 @@ const Home = () => {
 
       if (response.data) {
         localStorage.setItem("userTokenData", JSON.stringify(response.data));
-
-        const userTokenData = getUserTokenData();
-        console.log("userTokenData.accessToken", userTokenData.accessToken);
-
-        const test = await api.get("/user/details", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + userTokenData.accessToken,
-          },
-        });
-        console.log(test);
 
         navigate("/tasks");
       } else {

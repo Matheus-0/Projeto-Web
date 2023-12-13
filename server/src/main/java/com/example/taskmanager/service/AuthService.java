@@ -47,7 +47,7 @@ public class AuthService {
             e.printStackTrace();
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro: Algo deu errado no login de usuário.");
+                    .body("Erro: Algo deu errado no login de usuário. Verifique suas credenciais.");
         }
     }
 
